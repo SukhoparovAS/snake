@@ -83,7 +83,7 @@ class Snake {
         }
         this.snake = this.snake.map((el, id) => {
             if (id === 0) {
-                el.style.background = 'url("/head.svg")'
+                el.style.background = 'url("head.svg")'
                 el.style.backgroundPosition = 'center'
                 el.style.backgroundRepeat = 'no-repeat'
                 el.style.border = 'none'
@@ -159,7 +159,7 @@ class Apple {
         apple.style.top = this.generateCoors().y
         apple.style.left = this.generateCoors().x
         apple.style.boxSizing = 'border-box'
-        apple.style.background = 'url("/apple.svg")'
+        apple.style.background = 'url("apple.svg")'
         this.apple = apple
     }
 
