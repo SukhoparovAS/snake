@@ -9,26 +9,29 @@ class Snake {
 
     createSnake() {
         let snake = []
-        this.length = 4;
+        this.length = 3;
+        this.count = 0;
         this.field.clear()
         this.field.creatApple()
         for (let i = 0; i < this.length; i++) {
             let snakeElement = this.createElement()
-            snakeElement.style.left = `${31 * i}px`
+            snakeElement.style.left = `${this.field.cellSize * i}px`
             snakeElement.style.top = '0px'
             snake.push(snakeElement)
         }
-        this.field.append(...snake)
+        this.field.field.append(...snake)
         return snake
     }
 
     createElement() {
         let snakeElement = document.createElement('div');
         snakeElement.className = `snakeElement`;
-        snakeElement.style.width = "30px"
-        snakeElement.style.height = "30px"
+        snakeElement.style.width = this.field.cellSize + 'px'
+        snakeElement.style.height = this.field.cellSize + 'px'
         snakeElement.style.background = "green"
         snakeElement.style.position = 'absolute'
+        snakeElement.style.border = '1px solid white'
+        snakeElement.style.boxSizing = 'border-box'
         return snakeElement
     }
 
@@ -37,45 +40,48 @@ class Snake {
         switch (this.dir) {
             case 'ArrowDown':
                 snakeElement.style.left = this.snake[0].style.left
-                snakeElement.style.top = `${+this.snake[0].style.top.slice(0, -2) + 31}px`
+                snakeElement.style.top = `${+this.snake[0].style.top.slice(0, -2) + (this.field.cellSize)}px`
                 break
             case 'ArrowUp':
                 snakeElement.style.left = this.snake[0].style.left
-                snakeElement.style.top = `${+this.snake[0].style.top.slice(0, -2) - 31}px`
+                snakeElement.style.top = `${+this.snake[0].style.top.slice(0, -2) - (this.field.cellSize)}px`
                 break
             case 'ArrowRight':
                 snakeElement.style.top = this.snake[0].style.top
-                snakeElement.style.left = `${+this.snake[0].style.left.slice(0, -2) + 31}px`
+                snakeElement.style.left = `${+this.snake[0].style.left.slice(0, -2) + (this.field.cellSize)}px`
                 break
             case 'ArrowLeft':
                 snakeElement.style.top = this.snake[0].style.top
-                snakeElement.style.left = `${+this.snake[0].style.left.slice(0, -2) - 31}px`
+                snakeElement.style.left = `${+this.snake[0].style.left.slice(0, -2) - (this.field.cellSize)}px`
                 break
         }
 
-        if (+this.snake[0].style.top.slice(0, -2) > +this.field.style.height.slice(0, -2) - 32) {
+        if (+this.snake[0].style.top.slice(0, -2) > +this.field.height * this.field.cellSize - (this.field.cellSize)) {
             snakeElement.style.top = '0px'
         }
         if (+this.snake[0].style.top.slice(0, -2) < 0) {
-            snakeElement.style.top = `${+this.field.style.height.slice(0, -2) - 32}px`
+            snakeElement.style.top = `${+this.field.height * this.field.cellSize - (this.field.cellSize)}px`
         }
-        if (+this.snake[0].style.left.slice(0, -2) > +this.field.style.width.slice(0, -2) - 32) {
+        if (+this.snake[0].style.left.slice(0, -2) > +this.field.width * this.field.cellSize - (this.field.cellSize)) {
             snakeElement.style.left = '0px'
         }
         if (+this.snake[0].style.left.slice(0, -2) < 0) {
-            snakeElement.style.left = `${+this.field.style.width.slice(0, -2) - 32}px`
+            snakeElement.style.left = `${+this.field.width * this.field.cellSize - (this.field.cellSize)}px`
         }
 
         if (this.eatApple(snakeElement)) {
             this.field.creatApple()
             this.length++
+            this.count++
+            this.field.setCount(this.count)
         }
         if (this.checkFail(snakeElement)) {
             this.snake = this.createSnake()
             this.dir = 'ArrowDown'
+            this.field.setCount(0)
         }
         else {
-            this.field.append(snakeElement);
+            this.field.field.append(snakeElement);
             this.snake.unshift(snakeElement)
             if (this.length == this.snake.length - 1) {
                 this.snake[this.snake.length - 1].remove()
@@ -107,61 +113,74 @@ class Snake {
 }
 
 
-
 class Apple {
     constructor(field) {
-        if (field.querySelector('.apple'))
-            field.querySelector('.apple').remove()
+        if (field.field.querySelector('.apple'))
+            field.field.querySelector('.apple').remove()
         let apple = document.createElement('div')
         apple.className = `apple`;
-        apple.style.width = "30px"
-        apple.style.height = "30px"
+        apple.style.width = field.cellSize + 'px'
+        apple.style.height = field.cellSize + 'px'
         apple.style.background = "red"
         apple.style.position = 'absolute'
         apple.style.top = this.generateCoors(field).y
         apple.style.left = this.generateCoors(field).x
-        field.append(apple)
+        apple.style.boxSizing = 'border-box'
+        apple.style.border = '1px solid white'
+        field.field.append(apple)
         return apple
     }
 
     generateCoors(field) {
         return {
-            x: `${31 * Math.floor(Math.random() * field.width)}px`,
-            y: `${31 * Math.floor(Math.random() * field.height)}px`,
+            x: `${field.cellSize * Math.floor(Math.random() * field.width)}px`,
+            y: `${field.cellSize * Math.floor(Math.random() * field.height)}px`,
         }
     }
 }
-
-
 
 
 class Field {
-    constructor(width, height) {
+    constructor(width, height, cellSize) {
         let field = document.createElement('div')
-        field.width = width
-        field.height = height
         field.innerHTML = ''
         field.style.position = 'relative'
-        field.style.width = `${width * 31 + 1}px`
-        field.style.height = `${height * 31 + 1}px`
+        field.style.width = `${width * cellSize}px`
+        field.style.height = `${height * cellSize}px`
         field.style.border = '1px solid red'
-        field.style.margin = 'auto'
         field.className = 'field'
         field.style.overflow = 'hidden'
-        document.body.append(field)
-        field.clear = function () {
-            this.innerHTML = ''
-        }
-        field.creatApple = function () {
-            field.apple = new Apple(field)
-        }
-        return field
+        let counter = document.createElement('h1')
+        this.field = field
+        this.width = width
+        this.height = height
+        this.cellSize = cellSize
+        this.counter = counter
+        this.setCount(0)
+        document.body.append(this.counter)
+        document.body.append(this.field)
+    }
+
+    setCount(count) {
+        this.counter.textContent = `Счёт: ${count}`
+    }
+
+    clear = function () {
+        this.field.innerHTML = ''
+    }
+    creatApple = function () {
+        this.apple = new Apple(field)
     }
 }
+let body = document.body
+body.style.display = 'flex'
+body.style.height = '100vh'
+body.style.flexDirection = 'column'
+body.style.justifyContent = 'center'
+body.style.alignItems = 'center'
+body.style.overflow = 'hidden'
 
-
-
-let field = new Field(20, 20)
+let field = new Field(20, 20, 31)
+console.log(field);
 let snake = new Snake(field)
-
 setInterval(() => { snake.snakeMove() }, 200)
