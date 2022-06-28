@@ -37,35 +37,39 @@ class Snake {
 
     snakeMove() {
         let snakeElement = this.createElement()
+        const headElement = {
+            top: +this.snake[0].style.top.slice(0, -2),
+            left: +this.snake[0].style.left.slice(0, -2)
+        }
         switch (this.dir) {
             case 'ArrowDown':
-                snakeElement.style.left = this.snake[0].style.left
-                snakeElement.style.top = `${+this.snake[0].style.top.slice(0, -2) + (this.field.cellSize)}px`
+                snakeElement.style.left = headElement.left + 'px'
+                snakeElement.style.top = `${headElement.top + (this.field.cellSize)}px`
                 break
             case 'ArrowUp':
-                snakeElement.style.left = this.snake[0].style.left
-                snakeElement.style.top = `${+this.snake[0].style.top.slice(0, -2) - (this.field.cellSize)}px`
+                snakeElement.style.left = headElement.left + 'px'
+                snakeElement.style.top = `${headElement.top - (this.field.cellSize)}px`
                 break
             case 'ArrowRight':
-                snakeElement.style.top = this.snake[0].style.top
-                snakeElement.style.left = `${+this.snake[0].style.left.slice(0, -2) + (this.field.cellSize)}px`
+                snakeElement.style.top = headElement.top + 'px'
+                snakeElement.style.left = `${headElement.left + (this.field.cellSize)}px`
                 break
             case 'ArrowLeft':
-                snakeElement.style.top = this.snake[0].style.top
-                snakeElement.style.left = `${+this.snake[0].style.left.slice(0, -2) - (this.field.cellSize)}px`
+                snakeElement.style.top = headElement.top + 'px'
+                snakeElement.style.left = `${headElement.left - (this.field.cellSize)}px`
                 break
         }
 
-        if (+this.snake[0].style.top.slice(0, -2) > +this.field.height * this.field.cellSize - (this.field.cellSize)) {
+        if (headElement.top > +this.field.height * this.field.cellSize - (this.field.cellSize)) {
             snakeElement.style.top = '0px'
         }
-        if (+this.snake[0].style.top.slice(0, -2) < 0) {
+        if (headElement.top < 0) {
             snakeElement.style.top = `${+this.field.height * this.field.cellSize - (this.field.cellSize)}px`
         }
-        if (+this.snake[0].style.left.slice(0, -2) > +this.field.width * this.field.cellSize - (this.field.cellSize)) {
+        if (headElement.left > +this.field.width * this.field.cellSize - (this.field.cellSize)) {
             snakeElement.style.left = '0px'
         }
-        if (+this.snake[0].style.left.slice(0, -2) < 0) {
+        if (headElement.left < 0) {
             snakeElement.style.left = `${+this.field.width * this.field.cellSize - (this.field.cellSize)}px`
         }
 
