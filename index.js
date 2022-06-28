@@ -2,15 +2,14 @@ class Snake {
     constructor(cellSize, fieldWidth, fieldHeight) {
         this.dir = 'ArrowDown'
         this.cellSize = cellSize
-        this.fieldWidth = fieldWidth
-        this.fieldHeight = fieldHeight
+        this.fieldWidth = fieldWidth * cellSize
+        this.fieldHeight = fieldHeight * cellSize
         this.snake = this.createSnake();
     }
 
     createSnake() {
         let snake = []
         this.length = 3;
-
         for (let i = 0; i < this.length; i++) {
             let snakeElement = this.createElement()
             snakeElement.style.left = 0
@@ -61,17 +60,17 @@ class Snake {
                 break
         }
 
-        if (headElement.top > +this.fieldHeight * this.cellSize - (this.cellSize)) {
+        if (headElement.top > this.fieldHeight - this.cellSize) {
             snakeElement.style.top = '0px'
         }
         if (headElement.top < 0) {
-            snakeElement.style.top = `${+this.fieldHeight * this.cellSize - (this.cellSize)}px`
+            snakeElement.style.top = `${this.fieldHeight - this.cellSize}px`
         }
-        if (headElement.left > +this.fieldWidth * this.cellSize - (this.cellSize)) {
+        if (headElement.left > this.fieldWidth - this.cellSize) {
             snakeElement.style.left = '0px'
         }
         if (headElement.left < 0) {
-            snakeElement.style.left = `${+this.fieldWidth * this.cellSize - (this.cellSize)}px`
+            snakeElement.style.left = `${this.fieldWidth - this.cellSize}px`
         }
 
         this.snake[0].style.background = 'green'
@@ -289,6 +288,6 @@ body.style.justifyContent = 'center'
 body.style.alignItems = 'center'
 body.style.overflow = 'hidden'
 
-let field = new Field(25, 25, 40, 100)
+let field = new Field(20, 20, 50, 100)
 field.start()
 
