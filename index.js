@@ -30,7 +30,7 @@ class Snake {
         snakeElement.style.height = this.field.cellSize + 'px'
         snakeElement.style.background = "green"
         snakeElement.style.position = 'absolute'
-        snakeElement.style.border = '1px solid white'
+        snakeElement.style.border = '3px solid white'
         snakeElement.style.boxSizing = 'border-box'
         return snakeElement
     }
@@ -45,18 +45,22 @@ class Snake {
             case 'ArrowDown':
                 snakeElement.style.left = headElement.left + 'px'
                 snakeElement.style.top = `${headElement.top + (this.field.cellSize)}px`
+                snakeElement.style.transform = "rotate(0deg)"
                 break
             case 'ArrowUp':
                 snakeElement.style.left = headElement.left + 'px'
                 snakeElement.style.top = `${headElement.top - (this.field.cellSize)}px`
+                snakeElement.style.transform = "rotate(180deg)"
                 break
             case 'ArrowRight':
                 snakeElement.style.top = headElement.top + 'px'
                 snakeElement.style.left = `${headElement.left + (this.field.cellSize)}px`
+                snakeElement.style.transform = "rotate(-90deg)"
                 break
             case 'ArrowLeft':
                 snakeElement.style.top = headElement.top + 'px'
                 snakeElement.style.left = `${headElement.left - (this.field.cellSize)}px`
+                snakeElement.style.transform = "rotate(90deg)"
                 break
         }
 
@@ -72,6 +76,12 @@ class Snake {
         if (headElement.left < 0) {
             snakeElement.style.left = `${+this.field.width * this.field.cellSize - (this.field.cellSize)}px`
         }
+
+
+        this.snake[0].style.background = 'green'
+        this.snake[0].style.border = '3px solid white'
+
+
 
         if (this.eatApple(snakeElement)) {
             this.field.creatApple()
@@ -91,18 +101,59 @@ class Snake {
                 this.snake[this.snake.length - 1].remove()
                 this.snake.pop()
             }
+            this.snake = this.snake.map((el, id) => {
+                if (id === 0) {
+                    el.style.background = 'url("/head.svg")'
+                    el.style.backgroundPosition = 'center'
+                    el.style.backgroundRepeat = 'no-repeat'
+                    el.style.border = 'none'
+                    return el
+                }
+                return el
+            })
         }
     }
 
+    rotaryElement(direction, previousDir) {
+        let rotaryElement = this.snake[0]
+        if (previousDir === 'ArrowUp' && direction === 'ArrowLeft')
+            rotaryElement.style.borderBottomLeftRadius = '50%'
+        if (previousDir === 'ArrowDown' && direction === 'ArrowLeft')
+            rotaryElement.style.borderBottomRightRadius = '50%'
+        if (previousDir === 'ArrowLeft' && direction === 'ArrowUp')
+            rotaryElement.style.borderBottomRightRadius = '50%'
+        if (previousDir === 'ArrowLeft' && direction === 'ArrowDown')
+            rotaryElement.style.borderBottomLeftRadius = '50%'
+        if (previousDir === 'ArrowRight' && direction === 'ArrowUp')
+            rotaryElement.style.borderBottomLeftRadius = '50%'
+        if (previousDir === 'ArrowRight' && direction === 'ArrowDown')
+            rotaryElement.style.borderBottomRightRadius = '50%'
+        if (previousDir === 'ArrowUp' && direction === 'ArrowRight')
+            rotaryElement.style.borderBottomRightRadius = '50%'
+        if (previousDir === 'ArrowDown' && direction === 'ArrowRight')
+            rotaryElement.style.borderBottomLeftRadius = '50%'
+    }
+
     changeDir(key) {
-        if (key.code == 'ArrowLeft' && this.dir != 'ArrowRight')
+        let previousDir = this.dir
+        if (key.code == 'ArrowLeft' && this.dir != 'ArrowRight') {
             this.dir = key.code
-        if (key.code == 'ArrowRight' && this.dir != 'ArrowLeft')
+            this.rotaryElement(key.code, previousDir)
+        }
+        if (key.code == 'ArrowRight' && this.dir != 'ArrowLeft') {
             this.dir = key.code
-        if (key.code == 'ArrowUp' && this.dir != 'ArrowDown')
+            this.rotaryElement(key.code, previousDir)
+        }
+
+        if (key.code == 'ArrowUp' && this.dir != 'ArrowDown') {
             this.dir = key.code
-        if (key.code == 'ArrowDown' && this.dir != 'ArrowUp')
+            this.rotaryElement(key.code, previousDir)
+        }
+
+        if (key.code == 'ArrowDown' && this.dir != 'ArrowUp') {
             this.dir = key.code
+            this.rotaryElement(key.code, previousDir)
+        }
     }
 
     checkFail(headElement) {
@@ -130,7 +181,7 @@ class Apple {
         apple.style.top = this.generateCoors(field).y
         apple.style.left = this.generateCoors(field).x
         apple.style.boxSizing = 'border-box'
-        apple.style.border = '1px solid white'
+        apple.style.background = 'url("/apple.svg")'
         field.field.append(apple)
         return apple
     }
@@ -185,6 +236,5 @@ body.style.alignItems = 'center'
 body.style.overflow = 'hidden'
 
 let field = new Field(20, 20, 31)
-console.log(field);
 let snake = new Snake(field)
 setInterval(() => { snake.snakeMove() }, 200)
