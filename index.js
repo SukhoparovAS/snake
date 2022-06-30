@@ -249,13 +249,17 @@ class Field {
         this.creatApple()
         this.interval = setInterval(() => { this.gameLoop() }, this.stepTime)
         document.body.addEventListener('keydown', this.snake.changeDir.bind(this.snake))
-        this.pause = () => {
-            clearInterval(this.interval)
-            this.interval = null
-        }
-        this.resume = () => {
-            if (!this.interval)
+
+        this.playPause = () => {
+            if (!this.interval) {
                 this.interval = setInterval(() => { this.gameLoop() }, this.stepTime)
+                this.PlayPauseBtn.style.background = 'url("pause.svg")'
+            } else {
+                clearInterval(this.interval)
+                this.interval = null
+                this.PlayPauseBtn.style.background = 'url("play.svg")'
+            }
+
         }
         if (this.interface)
             this.interface.remove()
@@ -264,17 +268,21 @@ class Field {
 
     createInterface() {
         const interfaceParrent = document.createElement('div')
-        const resumeBtn = document.createElement('button')
-        const pauseBtn = document.createElement('button')
+        const PlayPauseBtn = document.createElement('button')
         const counter = document.createElement('h1')
         this.counter = counter
-        resumeBtn.textContent = 'Продолжить'
-        pauseBtn.textContent = 'Пауза'
+        this.PlayPauseBtn = PlayPauseBtn
+
+        PlayPauseBtn.style.width = "50px"
+        PlayPauseBtn.style.height = "50px"
+        PlayPauseBtn.style.background = 'url("pause.svg")'
+        PlayPauseBtn.style.border = 'none'
+        PlayPauseBtn.addEventListener('click', this.playPause)
+
         interfaceParrent.style.display = 'flex'
-        interfaceParrent.style.display = 'space-between'
-        pauseBtn.addEventListener('click', this.pause)
-        resumeBtn.addEventListener('click', this.resume)
-        interfaceParrent.append(pauseBtn, counter, resumeBtn)
+        interfaceParrent.style.alignItems = "center"
+        interfaceParrent.append(PlayPauseBtn, counter)
+
         this.parent.prepend(interfaceParrent)
         this.setCount(0)
         return interfaceParrent
@@ -288,6 +296,11 @@ body.style.justifyContent = 'center'
 body.style.alignItems = 'center'
 body.style.overflow = 'hidden'
 
-let field = new Field(20, 20, 50, 100)
+const cellSize = 20
+const width = Math.floor(document.documentElement.clientWidth / cellSize)
+const height = Math.floor((document.documentElement.clientHeight - 100) / cellSize)
+
+let field = new Field(width, height, cellSize, 100)
+
 field.start()
 
