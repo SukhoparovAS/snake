@@ -289,10 +289,65 @@ class Field {
         playPauseBtn.style.border = 'none'
         playPauseBtn.addEventListener('click', this.playPause)
 
-        interfaceParrent.append(playPauseBtn, counter)
 
-        this.parent.prepend(interfaceParrent)
+
+
+
+
+        const controlParrent = document.createElement('div')
+        const controlBtnUp = document.createElement('button')
+        const controlBtnDown = document.createElement('button')
+        const controlBtnLeft = document.createElement('button')
+        const controlBtnRight = document.createElement('button')
+        const arrowBacgroundSrc = 'url("arrow.svg")'
+        controlBtnUp.style.width = "50px"
+        controlBtnUp.style.height = "50px"
+        controlBtnUp.style.background = arrowBacgroundSrc
+        controlBtnUp.style.display = 'block'
+        controlBtnUp.style.border = 'none'
+
+        controlBtnDown.style.width = "50px"
+        controlBtnDown.style.height = "50px"
+        controlBtnDown.style.background = arrowBacgroundSrc
+        controlBtnDown.style.transform = 'rotate(180deg)'
+        controlBtnDown.style.display = 'block'
+        controlBtnDown.style.border = 'none'
+
+        controlBtnLeft.style.width = "50px"
+        controlBtnLeft.style.height = "50px"
+        controlBtnLeft.style.background = arrowBacgroundSrc
+        controlBtnLeft.style.transform = 'rotate(-90deg)'
+        controlBtnLeft.style.border = 'none'
+        controlBtnLeft.style.marginRight = '50px'
+
+
+        controlBtnRight.style.width = "50px"
+        controlBtnRight.style.height = "50px"
+        controlBtnRight.style.background = arrowBacgroundSrc
+        controlBtnRight.style.transform = 'rotate(90deg)'
+        controlBtnRight.style.border = 'none'
+
+        controlBtnUp.addEventListener('click', this.snake.changeDir.bind(this.snake, { code: "ArrowUp" }))
+        controlBtnDown.addEventListener('click', this.snake.changeDir.bind(this.snake, { code: "ArrowDown" }))
+        controlBtnLeft.addEventListener('click', this.snake.changeDir.bind(this.snake, { code: "ArrowLeft" }))
+        controlBtnRight.addEventListener('click', this.snake.changeDir.bind(this.snake, { code: "ArrowRight" }))
+
+        controlParrent.style.display = 'flex'
+        controlParrent.style.flexDirection = 'column'
+        controlParrent.style.alignItems = 'center'
+        controlParrent.style.position = 'absolute'
+        controlParrent.style.left = '50%'
+        controlParrent.style.bottom = '50px'
+        controlParrent.style.transform = 'translate(-50%)'
+        controlParrent.style.opacity = '0.5'
+
         this.setCount(0)
+
+        const leftTightBtns = document.createElement('div')
+        leftTightBtns.append(controlBtnLeft, controlBtnRight)
+        controlParrent.append(controlBtnUp, leftTightBtns, controlBtnDown)
+        interfaceParrent.append(playPauseBtn, counter, controlParrent)
+        this.parent.prepend(interfaceParrent)
         return interfaceParrent
     }
 }
@@ -305,7 +360,7 @@ body.style.alignItems = 'center'
 body.style.overflow = 'hidden'
 
 
-const cellSize = Math.floor(document.documentElement.clientWidth / 25)
+const cellSize = Math.floor(document.documentElement.clientWidth / 15)
 const width = Math.floor((document.documentElement.clientWidth - 25) / cellSize)
 const height = Math.floor((document.documentElement.clientHeight - 100) / cellSize)
 
