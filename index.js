@@ -253,35 +253,43 @@ class Field {
         this.playPause = () => {
             if (!this.interval) {
                 this.interval = setInterval(() => { this.gameLoop() }, this.stepTime)
-                this.PlayPauseBtn.style.background = 'url("pause.svg")'
+                this.playPauseBtn.style.background = 'url("pause.svg")'
             } else {
                 clearInterval(this.interval)
                 this.interval = null
-                this.PlayPauseBtn.style.background = 'url("play.svg")'
+                this.playPauseBtn.style.background = 'url("play.svg")'
             }
-
         }
+
         if (this.interface)
             this.interface.remove()
         this.interface = this.createInterface()
     }
 
+
+
     createInterface() {
+        const playPauseBtn = document.createElement('button')
+        const counter = document.createElement('div')
         const interfaceParrent = document.createElement('div')
-        const PlayPauseBtn = document.createElement('button')
-        const counter = document.createElement('h1')
         this.counter = counter
-        this.PlayPauseBtn = PlayPauseBtn
+        this.playPauseBtn = playPauseBtn
 
-        PlayPauseBtn.style.width = "50px"
-        PlayPauseBtn.style.height = "50px"
-        PlayPauseBtn.style.background = 'url("pause.svg")'
-        PlayPauseBtn.style.border = 'none'
-        PlayPauseBtn.addEventListener('click', this.playPause)
+        counter.style.position = 'absolute'
+        counter.style.top = '25px'
+        counter.style.right = '20px'
+        counter.style.fontSize = '20px'
 
-        interfaceParrent.style.display = 'flex'
-        interfaceParrent.style.alignItems = "center"
-        interfaceParrent.append(PlayPauseBtn, counter)
+        playPauseBtn.style.position = 'absolute'
+        playPauseBtn.style.top = '5px'
+        playPauseBtn.style.left = '20px'
+        playPauseBtn.style.width = "50px"
+        playPauseBtn.style.height = "50px"
+        playPauseBtn.style.background = 'url("pause.svg")'
+        playPauseBtn.style.border = 'none'
+        playPauseBtn.addEventListener('click', this.playPause)
+
+        interfaceParrent.append(playPauseBtn, counter)
 
         this.parent.prepend(interfaceParrent)
         this.setCount(0)
@@ -296,8 +304,9 @@ body.style.justifyContent = 'center'
 body.style.alignItems = 'center'
 body.style.overflow = 'hidden'
 
-const cellSize = 20
-const width = Math.floor(document.documentElement.clientWidth / cellSize)
+
+const cellSize = Math.floor(document.documentElement.clientWidth / 25)
+const width = Math.floor((document.documentElement.clientWidth - 25) / cellSize)
 const height = Math.floor((document.documentElement.clientHeight - 100) / cellSize)
 
 let field = new Field(width, height, cellSize, 100)
