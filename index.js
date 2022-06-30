@@ -340,6 +340,8 @@ class Field {
         controlParrent.style.bottom = '50px'
         controlParrent.style.transform = 'translate(-50%)'
         controlParrent.style.opacity = '0.5'
+        controlParrent.style.zIndex = 100
+
 
         this.setCount(0)
 
