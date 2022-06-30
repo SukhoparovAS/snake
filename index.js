@@ -345,14 +345,42 @@ class Field {
 
         this.setCount(0)
 
+
         const leftTightBtns = document.createElement('div')
         leftTightBtns.append(controlBtnLeft, controlBtnRight)
-        controlParrent.append(controlBtnUp, leftTightBtns, controlBtnDown)
+        if (isMobile.any()) {
+            controlParrent.append(controlBtnUp, leftTightBtns, controlBtnDown)
+        }
         interfaceParrent.append(playPauseBtn, counter, controlParrent)
         this.parent.prepend(interfaceParrent)
         return interfaceParrent
     }
 }
+
+
+isMobile = {
+    Android: function () {
+        return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry: function () {
+        return navigator.userAgent.match(/BlackBerry/i);
+    },
+    iOS: function () {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera: function () {
+        return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows: function () {
+        return navigator.userAgent.match(/IEMobile/i);
+    },
+    any: function () {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    }
+};
+
+
+
 let body = document.body
 body.style.display = 'flex'
 body.style.height = '100vh'
